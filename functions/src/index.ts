@@ -1,9 +1,11 @@
 import * as functions from "firebase-functions";
 import express from "express";
 import cors from "cors";
-import petRouter from "./routes/petRouter";
+import usersRouter from "./routes/usersRouter";
+import eventsRouter from "./routes/eventsRouter";
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use("/pets", petRouter);
+app.use("/users", usersRouter);
+app.use("/events", eventsRouter);
 export const api = functions.https.onRequest(app);
