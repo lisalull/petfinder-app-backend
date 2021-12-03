@@ -1,6 +1,6 @@
 import { ObjectId } from "bson";
 
-export default interface User {
+export default interface Profile {
   _id?: ObjectId;
   displayname: string;
   phone: string;

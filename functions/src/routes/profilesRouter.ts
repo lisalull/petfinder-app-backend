@@ -1,21 +1,21 @@
 import express from "express";
 import { getClient } from "../db";
-import User from "../models/User";
+import Profile from "../models/Profile";
 
-const usersRouter = express.Router();
+const profilesRouter = express.Router();
 
 const errorResponse = (error: any, res: any) => {
   console.error("FAIL", error);
   res.status(500).json({ message: "Internal Server Error" });
 };
 
-usersRouter.get("/:id", async (req, res) => {
+profilesRouter.get("/:id", async (req, res) => {
   try {
     const id: string = req.params.id;
     const client = await getClient();
     const results = await client
       .db()
-      .collection<User>("users")
+      .collection<Profile>("profiles")
       .find({ uid: id })
       .toArray();
     res.json(results);
@@ -24,15 +24,15 @@ usersRouter.get("/:id", async (req, res) => {
   }
 });
 
-usersRouter.post("/", async (req, res) => {
+profilesRouter.post("/", async (req, res) => {
   try {
-    const newUser: User = req.body;
+    const newUser: Profile = req.body;
     const client = await getClient();
-    await client.db().collection<User>("users").insertOne(newUser);
+    await client.db().collection<Profile>("profiles").insertOne(newUser);
     res.status(201).json(newUser);
   } catch (err) {
     errorResponse(err, res);
   }
 });
 
-export default usersRouter;
+export default profilesRouter;
