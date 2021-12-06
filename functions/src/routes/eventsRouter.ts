@@ -11,13 +11,11 @@ const errorResponse = (error: any, res: any) => {
 
 eventsRouter.get("/", async (req, res) => {
   try {
-    const { category } = req.query;
-    const query: any = { ...(category ? { category } : {}) };
     const client = await getClient();
     const results = await client
       .db()
       .collection<Event>("events")
-      .find(query)
+      .find()
       .toArray();
     res.json(results);
   } catch (err) {
