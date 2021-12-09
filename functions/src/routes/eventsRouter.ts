@@ -1,3 +1,4 @@
+import { ObjectId } from "bson";
 import express from "express";
 import { getClient } from "../db";
 import Event from "../models/Event";
@@ -15,7 +16,7 @@ eventsRouter.get("/", async (req, res) => {
     const results = await client
       .db()
       .collection<Event>("events")
-      .find()
+      .find({ returned: false })
       .toArray();
     res.json(results);
   } catch (err) {
@@ -31,6 +32,24 @@ eventsRouter.post("/", async (req, res) => {
     res.status(201).json(newEvent);
   } catch (err) {
     errorResponse(err, res);
+  }
+});
+
+eventsRouter.put("/:id", async (req, res) => {
+  try {
+    const id: string = req.params.id;
+    const client = await getClient();
+    const result = await client
+      .db()
+      .collection<Event>("events")
+      .updateOne({ _id: new ObjectId(id) }, { $set: { returned: true } });
+    if (result.modifiedCount) {
+      res.sendStatus(201);
+    } else {
+      res.status(404).json({ message: "Not Found" });
+    }
+  } catch (error) {
+    errorResponse(error, res);
   }
 });
 
