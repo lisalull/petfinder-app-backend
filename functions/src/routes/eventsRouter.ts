@@ -53,4 +53,24 @@ eventsRouter.put("/:id", async (req, res) => {
   }
 });
 
+eventsRouter.put("/link-sighting/:id", async (req, res) => {
+  try {
+    const id: string = req.params.id;
+    const newEvent: Event = req.body;
+    delete newEvent._id;
+    const client = await getClient();
+    const result = await client
+      .db()
+      .collection<Event>("events")
+      .replaceOne({ _id: new ObjectId(id) }, newEvent);
+    if (result.modifiedCount) {
+      res.status(201).json(newEvent);
+    } else {
+      res.status(404).json({ message: "Not Found" });
+    }
+  } catch (error) {
+    errorResponse(error, res);
+  }
+});
+
 export default eventsRouter;
